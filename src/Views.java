@@ -39,4 +39,20 @@ public class Views {
 
         Server.getAnotherConnectionFromRoom(connection.getRoomId(), connection).sendMessage("makeMove&"+message);
     }
+
+    public static void makeShoot(Connection connection, String message) throws Exception{
+        Map<String, String> body = Utils.getRequestBody(message);
+
+        if(body.get("x_coord") == null){
+            throw new ParameterExceptedError("x_coord");
+        }
+        if(body.get("y_coord") == null){
+            throw new ParameterExceptedError("y_coord");
+        }
+        if(body.get("direction") == null){
+            throw new ParameterExceptedError("direction");
+        }
+
+        Server.getAnotherConnectionFromRoom(connection.getRoomId(), connection).sendMessage("makeShoot&"+message);
+    }
 }
