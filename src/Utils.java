@@ -1,7 +1,5 @@
-import java.io.BufferedWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class Utils {
     public static Map<String, String> getRequestBody(String message){
