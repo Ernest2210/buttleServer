@@ -26,4 +26,17 @@ public class Views {
             conn.sendMessage(answer);
         }
     }
+
+    public static void makeMove(Connection connection, String message) throws Exception {
+        Map<String, String> body = Utils.getRequestBody(message);
+
+        if(body.get("x_coord") == null){
+            throw new ParameterExceptedError("x_coord");
+        }
+        if(body.get("y_coord") == null){
+            throw new ParameterExceptedError("y_coord");
+        }
+
+        Server.getAnotherConnectionFromRoom(connection.getRoomId(), connection).sendMessage("makeMove&"+message);
+    }
 }
