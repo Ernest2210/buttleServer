@@ -38,10 +38,15 @@ public class Connection extends Thread{
 
     @Override
     public void run(){
-        while (true){
+        while (client.isConnected() && !client.isClosed()){
             String message;
             try {
                 message = in.readLine();
+                if(message == null){
+                    client.close();
+                }
+                System.out.print(client);
+                System.out.println(" " + message);
                 Router.route(message, this);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -51,7 +56,7 @@ public class Connection extends Thread{
 
     public void sendMessage(String message){
         try {
-            out.write(message);
+            out.write(message + "\n");
             out.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);

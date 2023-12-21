@@ -45,7 +45,7 @@ public class Server{
         return id;
     }
 
-    public static void AddSecondPlayerIntoRoom(UUID id, Connection connection) throws NotFound {
+    public static void addSecondPlayerIntoRoom(UUID id, Connection connection) throws NotFound {
         List<Connection> connections = rooms.get(id);
         if(connections != null){
             connection.setRoomId(id);
@@ -53,5 +53,10 @@ public class Server{
         }else {
             throw new NotFound("room", id.toString());
         }
+    }
+
+    public static void deleteRoom(UUID id){
+        System.out.println("ROOM " + id.toString() + " DELETED");
+        rooms.remove(id);
     }
 }

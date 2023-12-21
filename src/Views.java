@@ -1,5 +1,6 @@
 import exceptions.ParameterExceptedError;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -7,7 +8,7 @@ public class Views {
     public static void createRoom(Connection connection, String message) throws Exception {
         UUID roomId = Server.createRoom(connection);
 
-        String answer = "waitSecondPlayer&room=" + roomId.toString() + "\n";
+        String answer = "waitSecondPlayer&room=" + roomId.toString();
         connection.sendMessage(answer);
     }
 
@@ -19,9 +20,9 @@ public class Views {
         }
 
         UUID roomID = UUID.fromString(body.get("room"));
-        Server.AddSecondPlayerIntoRoom(roomID, connection);
+        Server.addSecondPlayerIntoRoom(roomID, connection);
 
-        String answer = "startGame&\n";
+        String answer = "startGame&";
         for(Connection conn: Server.getConnectionsFromRoom(roomID)){
             conn.sendMessage(answer);
         }
@@ -35,6 +36,9 @@ public class Views {
         }
         if(body.get("y_coord") == null){
             throw new ParameterExceptedError("y_coord");
+        }
+        if(body.get("direction") == null){
+            throw new ParameterExceptedError("direction");
         }
 
         Server.getAnotherConnectionFromRoom(connection.getRoomId(), connection).sendMessage("makeMove&"+message);
@@ -54,5 +58,22 @@ public class Views {
         }
 
         Server.getAnotherConnectionFromRoom(connection.getRoomId(), connection).sendMessage("makeShoot&"+message);
+    }
+
+    public static void gameOver(Connection connection, String message) throws Exception{
+        Map<String, String> body = Utils.getRequestBody(message);
+
+        if(body.get("lose_type") == null){
+            throw new ParameterExceptedError("lose_type");
+        }
+
+        List<Connection> connections = Server.getConnectionsFromRoom(connection.getRoomId());
+        if(connections != null) {
+            Server.deleteRoom(connection.getRoomId());
+            for (Connection conn : connections) {
+                conn.sendMessage("gameOver&" + message);
+                conn.setRoomId(null);
+            }
+        }
     }
 }
